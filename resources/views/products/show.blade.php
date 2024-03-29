@@ -12,7 +12,19 @@
             @else
                 <p>No image available.</p>
             @endif
-            <a href="{{ route('products.index') }}" class="btn btn-secondary">Back to list</a>
+
+            <!-- Add to Cart Form -->
+            <form action="{{ route('cart.add') }}" method="POST">
+                @csrf
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <div class="form-group">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control" style="width: auto;">
+                </div>
+                <button type="submit" class="btn btn-primary">Add to Cart</button>
+            </form>
+
+            <a href="{{ route('products.index') }}" class="btn btn-secondary mt-2">Back to list</a>
         </div>
     </div>
 </div>
