@@ -24,5 +24,10 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function likes()
+    {
+        return $this->hasMany('App\Models\ProductLike');
+    }
+
     // Add more methods and properties as needed
 }

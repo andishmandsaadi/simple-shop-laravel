@@ -13,6 +13,7 @@
                 <th>Name</th>
                 <th>Description</th>
                 <th>Price</th>
+                <th>Likes</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -29,6 +30,7 @@
                 <td>{{ $product->name }}</td>
                 <td>{{ $product->description }}</td>
                 <td>${{ number_format($product->price, 2) }}</td>
+                <td>{{ $product->likes_count }}</td>
                 <td>
                     <a href="{{ route('products.show', $product->id) }}" class="btn btn-info">View</a>
                     <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning">Edit</a>

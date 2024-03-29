@@ -5,18 +5,27 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Storage;
+use App\Models\ProductLike;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::orderBy('created_at', 'desc')->paginate(10);
+        $products = Product::withCount('likes')->orderBy('created_at', 'desc')->paginate(10);
         return view('products.index', compact('products'));
     }
 
     public function show(Product $product)
     {
-        return view('products.show', compact('product'));
+        $isLiked = false;
+        if (Auth::check()) {
+            $isLiked = ProductLike::where('product_id', $product->id)
+                                ->where('user_id', Auth::id())
+                                ->exists();
+        }
+
+        return view('products.show', compact('product', 'isLiked'));
     }
 
     public function create()
@@ -86,5 +95,28 @@ class ProductController extends Controller
     {
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+    }
+
+    public function like($id)
+    {
+        $product = Product::findOrFail($id);
+        $user = Auth::user();
+        ProductLike::updateOrCreate(
+            ['user_id' => $user->id],
+            ['product_id' => $product->id]
+        );
+
+        return response()->json(['success' => true]);
+    }
+
+    public function unlike($id)
+    {
+        $user = Auth::user();
+        $like = ProductLike::where('product_id', $id)->where('user_id', $user->id)->first();
+        if ($like) {
+            $like->delete();
+        }
+
+        return response()->json(['success' => true]);
     }
 }

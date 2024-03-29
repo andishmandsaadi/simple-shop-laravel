@@ -12,6 +12,9 @@
             @else
                 <p>No image available.</p>
             @endif
+            <button id="like-btn" data-liked="{{ $isLiked ? 'true' : 'false' }}" data-product-id="{{ $product->id }}">
+                {{ $isLiked ? 'Unlike' : 'Like' }}
+            </button>
 
             <!-- Add to Cart Form -->
             <form action="{{ route('cart.add') }}" method="POST">
@@ -28,4 +31,34 @@
         </div>
     </div>
 </div>
+<script>
+document.getElementById('like-btn').addEventListener('click', function() {
+    const productId = this.dataset.productId;
+    const liked = this.dataset.liked === 'true';
+    const url = `/products/${productId}/like`;
+    const method = liked ? 'DELETE' : 'POST';
+
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ _token: "{{ csrf_token() }}" })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Toggle the liked state
+            this.dataset.liked = !liked;
+            this.innerText = !liked ? 'Unlike' : 'Like';
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+});
+
+</script>
+
 @endsection

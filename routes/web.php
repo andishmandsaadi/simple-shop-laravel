@@ -35,6 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('cart.update');
     Route::post('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+    Route::post('/products/{id}/like', [ProductController::class, 'like'])->name('products.like');
+    Route::delete('/products/{id}/like', [ProductController::class, 'unlike'])->name('products.unlike');
 });
 
 require __DIR__.'/auth.php';
